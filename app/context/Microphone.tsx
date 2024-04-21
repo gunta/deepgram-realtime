@@ -1,42 +1,42 @@
-"use client";
+'use client'
 
-import { useQueue } from "@uidotdev/usehooks";
+import { useQueue } from '@uidotdev/usehooks'
 import {
-  Dispatch,
-  SetStateAction,
+  type Dispatch,
+  type SetStateAction,
   createContext,
   useCallback,
   useContext,
   useEffect,
   useState,
-} from "react";
+} from 'react'
 
 type MicrophoneContext = {
-  microphone: MediaRecorder | undefined;
-  setMicrophone: Dispatch<SetStateAction<MediaRecorder | undefined>>;
-  startMicrophone: () => void;
-  stopMicrophone: () => void;
-  microphoneOpen: boolean;
-  enqueueBlob: (element: Blob) => void;
-  removeBlob: () => Blob | undefined;
-  firstBlob: Blob | undefined;
-  queueSize: number;
-  queue: Blob[];
-  stream: MediaStream | undefined;
-};
-
-interface MicrophoneContextInterface {
-  children: React.ReactNode;
+  microphone: MediaRecorder | undefined
+  setMicrophone: Dispatch<SetStateAction<MediaRecorder | undefined>>
+  startMicrophone: () => void
+  stopMicrophone: () => void
+  microphoneOpen: boolean
+  enqueueBlob: (element: Blob) => void
+  removeBlob: () => Blob | undefined
+  firstBlob: Blob | undefined
+  queueSize: number
+  queue: Blob[]
+  stream: MediaStream | undefined
 }
 
-const MicrophoneContext = createContext({} as MicrophoneContext);
+interface MicrophoneContextInterface {
+  children: React.ReactNode
+}
+
+const MicrophoneContext = createContext({} as MicrophoneContext)
 
 const MicrophoneContextProvider = ({
   children,
 }: MicrophoneContextInterface) => {
-  const [microphone, setMicrophone] = useState<MediaRecorder>();
-  const [stream, setStream] = useState<MediaStream>();
-  const [microphoneOpen, setMicrophoneOpen] = useState(false);
+  const [microphone, setMicrophone] = useState<MediaRecorder>()
+  const [stream, setStream] = useState<MediaStream>()
+  const [microphoneOpen, setMicrophoneOpen] = useState(false)
 
   const {
     add: enqueueBlob, // addMicrophoneBlob,
@@ -44,7 +44,7 @@ const MicrophoneContextProvider = ({
     first: firstBlob, // firstMicrophoneBlob,
     size: queueSize, // countBlobs,
     queue, // : microphoneBlobs,
-  } = useQueue<Blob>([]);
+  } = useQueue<Blob>([])
 
   useEffect(() => {
     async function setupMicrophone() {
@@ -53,58 +53,58 @@ const MicrophoneContextProvider = ({
           noiseSuppression: true,
           echoCancellation: true,
         },
-      });
+      })
 
-      setStream(stream);
+      setStream(stream)
 
-      const microphone = new MediaRecorder(stream);
+      const microphone = new MediaRecorder(stream)
 
-      setMicrophone(microphone);
+      setMicrophone(microphone)
     }
 
     if (!microphone) {
-      setupMicrophone();
+      setupMicrophone()
     }
-  }, [enqueueBlob, microphone, microphoneOpen]);
+  }, [enqueueBlob, microphone, microphoneOpen])
 
   useEffect(() => {
-    if (!microphone) return;
+    if (!microphone) return
 
     microphone.ondataavailable = (e) => {
-      if (microphoneOpen) enqueueBlob(e.data);
-    };
-
-    return () => {
-      microphone.ondataavailable = null;
-    };
-  }, [enqueueBlob, microphone, microphoneOpen]);
-
-  const stopMicrophone = useCallback(() => {
-    if (microphone?.state === "recording") microphone?.pause();
-
-    setMicrophoneOpen(false);
-  }, [microphone]);
-
-  const startMicrophone = useCallback(() => {
-    if (microphone?.state === "paused") {
-      microphone?.resume();
-    } else {
-      microphone?.start(250);
+      if (microphoneOpen) enqueueBlob(e.data)
     }
 
-    setMicrophoneOpen(true);
-  }, [microphone]);
+    return () => {
+      microphone.ondataavailable = null
+    }
+  }, [enqueueBlob, microphone, microphoneOpen])
+
+  const stopMicrophone = useCallback(() => {
+    if (microphone?.state === 'recording') microphone?.pause()
+
+    setMicrophoneOpen(false)
+  }, [microphone])
+
+  const startMicrophone = useCallback(() => {
+    if (microphone?.state === 'paused') {
+      microphone?.resume()
+    } else {
+      microphone?.start(250)
+    }
+
+    setMicrophoneOpen(true)
+  }, [microphone])
 
   useEffect(() => {
     const eventer = () =>
-      document.visibilityState !== "visible" && stopMicrophone();
+      document.visibilityState !== 'visible' && stopMicrophone()
 
-    window.addEventListener("visibilitychange", eventer);
+    window.addEventListener('visibilitychange', eventer)
 
     return () => {
-      window.removeEventListener("visibilitychange", eventer);
-    };
-  }, [stopMicrophone]);
+      window.removeEventListener('visibilitychange', eventer)
+    }
+  }, [stopMicrophone])
 
   return (
     <MicrophoneContext.Provider
@@ -124,11 +124,11 @@ const MicrophoneContextProvider = ({
     >
       {children}
     </MicrophoneContext.Provider>
-  );
-};
-
-function useMicrophone() {
-  return useContext(MicrophoneContext);
+  )
 }
 
-export { MicrophoneContextProvider, useMicrophone };
+function useMicrophone() {
+  return useContext(MicrophoneContext)
+}
+
+export { MicrophoneContextProvider, useMicrophone }

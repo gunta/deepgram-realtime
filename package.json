@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint:format": "bunx @biomejs/biome format --write ./",
+    "lint:lint": "bunx @biomejs/biome lint --apply ./",
+    "lint:check": "bunx @biomejs/biome check --apply ./"
   },
   "dependencies": {
     "@deepgram/sdk": "^3.2.0-alpha.1",
@@ -38,6 +41,7 @@
     "swr": "^2.2.4"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.7.0",
     "@commitlint/cli": "^19.1.0",
     "@commitlint/config-conventional": "^19.1.0",
     "@semantic-release/changelog": "^6.0.3",
@@ -61,7 +65,5 @@
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
-  "trustedDependencies": [
-    "copy-webpack-plugin"
-  ]
+  "trustedDependencies": ["copy-webpack-plugin"]
 }

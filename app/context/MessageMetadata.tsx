@@ -1,35 +1,35 @@
-"use client";
+'use client'
 
 import {
-  Dispatch,
-  SetStateAction,
+  type Dispatch,
+  type SetStateAction,
   createContext,
   useCallback,
   useContext,
   useState,
-} from "react";
-import { MessageMetadata } from "../lib/types";
+} from 'react'
+import type { MessageMetadata } from '../lib/types'
 
 type MessageMetadataContext = {
-  messageData: MessageMetadata[];
-  setMessageData: Dispatch<SetStateAction<MessageMetadata[]>>;
-  addMessageData: (queueItem: MessageMetadata) => void;
-};
-
-interface MessageMetadataContextInterface {
-  children: React.ReactNode;
+  messageData: MessageMetadata[]
+  setMessageData: Dispatch<SetStateAction<MessageMetadata[]>>
+  addMessageData: (queueItem: MessageMetadata) => void
 }
 
-const MessageMetadataContext = createContext({} as MessageMetadataContext);
+interface MessageMetadataContextInterface {
+  children: React.ReactNode
+}
+
+const MessageMetadataContext = createContext({} as MessageMetadataContext)
 
 const MessageMetadataContextProvider = ({
   children,
 }: MessageMetadataContextInterface) => {
-  const [messageData, setMessageData] = useState<MessageMetadata[]>([]);
+  const [messageData, setMessageData] = useState<MessageMetadata[]>([])
 
   const addMessageData = useCallback((queueItem: MessageMetadata): void => {
-    setMessageData((q) => [...q, queueItem]);
-  }, []);
+    setMessageData((q) => [...q, queueItem])
+  }, [])
 
   return (
     <MessageMetadataContext.Provider
@@ -41,11 +41,11 @@ const MessageMetadataContextProvider = ({
     >
       {children}
     </MessageMetadataContext.Provider>
-  );
-};
-
-function useMessageData() {
-  return useContext(MessageMetadataContext);
+  )
 }
 
-export { MessageMetadataContextProvider, useMessageData };
+function useMessageData() {
+  return useContext(MessageMetadataContext)
+}
+
+export { MessageMetadataContextProvider, useMessageData }
